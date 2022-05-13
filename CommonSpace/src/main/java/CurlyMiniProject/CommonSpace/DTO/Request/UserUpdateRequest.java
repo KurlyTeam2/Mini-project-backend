@@ -7,13 +7,7 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class    UserUpdateRequest {
+public class UserUpdateRequest {
     private String currentPassword;
     private String newPassword;
-
-    public UserUpdateRequest(String currentPassword, String newPassword) {
-        this.currentPassword = currentPassword;
-        this.newPassword = newPassword;
-    }
-
 }

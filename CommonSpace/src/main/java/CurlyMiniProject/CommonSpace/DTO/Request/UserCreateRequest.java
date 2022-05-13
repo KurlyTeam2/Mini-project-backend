@@ -10,4 +10,5 @@ public class UserCreateRequest {
     private String id;
     private String password;
     private String name;
+    private boolean isAdmin;
 }

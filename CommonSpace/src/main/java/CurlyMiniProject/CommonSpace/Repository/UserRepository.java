@@ -10,28 +10,30 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     /**
-     * name으로 user를 조회합니다.
-     * @param name : 조회하고자 하는 user의 person_name
+     * name으로 user 조회
+     * @param name : 조회하고자 하는 user person_name
      */
+    @Query("SELECT u from User u "
+            + "WHERE u.name = :name")
     List<User> findByName(@Param("name") String name);
 
     /**
-     * id로 user를 조회합니다.
+     * id로 user 조회
      * Work FETCH join
-     * @param id
+     * @param id : 조회하고자 하는 user ID(PK)
      */
     @Query("SELECT u FROM User u "
-                + "INNER JOIN FETCH u.works w "
-                + "WHERE w.Id = :id")
+            + "INNER JOIN FETCH u.works w "
+            + "WHERE w.Id = :id")
     Optional<User> findByIdWithWork(@Param("id") Long id);
 
     /**
-     * name으로 user를 조회합니다.
+     * name으로 user 조회합니다.
      * Work FETCH join
-     * @param name
+     * @param name : 조회하고자 하는 user person_name
      */
     @Query("SELECT u FROM User u "
-                + "INNER JOIN FETCH u.works w "
-                + "WHERE u.name = :name")
+            + "INNER JOIN FETCH u.works w "
+            + "WHERE u.name = :name")
     Optional<User> findByNameWithWork(@Param("name") String name);
 }

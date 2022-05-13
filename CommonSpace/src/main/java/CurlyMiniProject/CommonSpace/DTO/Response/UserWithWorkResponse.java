@@ -1,5 +1,6 @@
-package CurlyMiniProject.CommonSpace.DTO.Domain;
+package CurlyMiniProject.CommonSpace.DTO.Response;
 
+import CurlyMiniProject.CommonSpace.DTO.Domain.WorkDTO;
 import CurlyMiniProject.CommonSpace.Domain.User;
 import lombok.Data;
 import lombok.Getter;
@@ -12,22 +13,20 @@ import java.util.stream.Collectors;
 @Data
 @Getter
 @Setter
-public class UserDTO {
+public class UserWithWorkResponse {
     private Long Id;
     private String name;
     private LocalDate entryDate;
     private String userId;
-//    private String password;
     private boolean isAdmin;
     private List<WorkDTO> works;
 
-    public UserDTO(User u) {
+    public UserWithWorkResponse(User u) {
         Id = u.getId();
         name = u.getName();
         entryDate = u.getEntryDate();
         userId = u.getUserId();
-//        password = u.getPassword();
         isAdmin = u.isAdmin();
-        works = u.getWorks().stream().map(work -> new WorkDTO(work)).collect(Collectors.toList());
+        works = u.getWorks().stream().map(WorkDTO::new).collect(Collectors.toList());
     }
 }

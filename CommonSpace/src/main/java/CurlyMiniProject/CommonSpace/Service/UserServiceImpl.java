@@ -1,5 +1,6 @@
 package CurlyMiniProject.CommonSpace.Service;
 
+import CurlyMiniProject.CommonSpace.DTO.Response.UserResponse;
 import CurlyMiniProject.CommonSpace.Domain.User;
 import CurlyMiniProject.CommonSpace.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,32 +19,27 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public List<User> findAll() {
-        List<User> results = userRepository.findAll();
-        return results;
+        return userRepository.findAll();
     }
 
     @Override
     public Optional<User> findById(Long id) {
-        Optional<User> result = userRepository.findById(id);
-        return Optional.ofNullable(result.orElse(null));
+        return userRepository.findById(id);
     }
 
     @Override
     public List<User> findByName(String name) {
-        List<User> results = userRepository.findByName(name);
-        return results;
+        return userRepository.findByName(name);
     }
 
     @Override
     public Optional<User> findByIdWithWork(Long id) {
-        Optional<User> result = userRepository.findByIdWithWork(id);
-        return Optional.ofNullable(result.orElse(null));
+        return userRepository.findByIdWithWork(id);
     }
 
     @Override
     public Optional<User> findByNameWithWork(String name) {
-        Optional<User> result = userRepository.findByNameWithWork(name);
-        return Optional.ofNullable(result.orElse(null));
+        return userRepository.findByNameWithWork(name);
     }
 
     @Override
