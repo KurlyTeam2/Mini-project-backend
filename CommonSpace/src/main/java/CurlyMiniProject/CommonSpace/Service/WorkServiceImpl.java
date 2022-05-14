@@ -3,6 +3,7 @@ package CurlyMiniProject.CommonSpace.Service;
 import CurlyMiniProject.CommonSpace.Domain.User;
 import CurlyMiniProject.CommonSpace.Domain.Work;
 import CurlyMiniProject.CommonSpace.Repository.WorkRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -10,19 +11,17 @@ import java.util.List;
 @Service("workService")
 public class WorkServiceImpl implements WorkService {
 
+    @Autowired
     private WorkRepository workRepository;
-    private UserService userService;
 
     @Override
     public List<Work> getWorks(Long id) {
-        List<Work> result = workRepository.findByUser_Id(id);
-        return result;
+        return workRepository.findByUserId(id);
     }
 
     @Override
     public Work postWorks(Work work) {
-        Work result = workRepository.save(work);
-        return result;
+        return workRepository.save(work);
     }
 
     @Override

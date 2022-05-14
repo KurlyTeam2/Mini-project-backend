@@ -16,7 +16,7 @@ public class WorkDTO {
     private Long Id;
     private LocalDateTime workingTime;
     private LocalDateTime quittingTime;
-    private LocalTime total_time;
+    private LocalTime totalTime;
     private LocalDate workDate;
     private Long userId;
     private String userName;
@@ -25,7 +25,7 @@ public class WorkDTO {
         Id = work.getId();
         workingTime = work.getWorkingTime();
         quittingTime = work.getQuittingTime();
-        total_time = work.getTotalTime();
+        totalTime = work.getTotalTime();
         workDate = work.getWorkDate();
         userId = work.getUser().getId();
         userName = work.getUser().getName();

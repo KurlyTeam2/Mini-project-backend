@@ -6,7 +6,6 @@ import CurlyMiniProject.CommonSpace.DTO.Default.StatusCode;
 import CurlyMiniProject.CommonSpace.DTO.Request.UserCreateRequest;
 import CurlyMiniProject.CommonSpace.DTO.Request.UserUpdateRequest;
 import CurlyMiniProject.CommonSpace.DTO.Response.UserResponse;
-import CurlyMiniProject.CommonSpace.DTO.Response.UserWithWorkResponse;
 import CurlyMiniProject.CommonSpace.Domain.User;
 import CurlyMiniProject.CommonSpace.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

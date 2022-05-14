@@ -13,10 +13,10 @@ public interface WorkRepository extends JpaRepository<Work, Long> {
     @Query("SELECT w FROM Work w "
                 + "INNER JOIN FETCH w.user u "
                 + "WHERE u.Id = :personId")
-    List<Work> findByUser_Id(@Param("personId") Long personId);
+    List<Work> findByUserId(@Param("personId") Long personId);
 
     @Query("SELECT w FROM Work w "
                 + "INNER JOIN FETCH w.user u "
                 + "WHERE u.name = :personName")
-    List<Work> findByUser_Name(@Param("personName") String personName);
+    List<Work> findByUserName(@Param("personName") String personName);
 }
