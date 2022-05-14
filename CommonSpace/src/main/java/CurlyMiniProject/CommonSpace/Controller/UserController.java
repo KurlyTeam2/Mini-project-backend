@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/users")
 public class UserController {
 
+    @Autowired
     private UserService userService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
