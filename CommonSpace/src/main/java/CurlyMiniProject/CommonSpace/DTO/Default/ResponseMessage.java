@@ -11,7 +11,10 @@ public class ResponseMessage {
     public static final String CREATED_WORK = "work log success";
     public static final String UPDATED_USER_SUCCESS = "user update success";
     public static final String UPDATED_USER_FAIL = "user update fail";
+    public static final String UPDATED_WORK_SUCCESS = "work update success";
+    public static final String UPDATED_WORK_FAIL = "work update fail";
     public static final String DELETE_USER = "withdrawal success";
+    public static final String NOT_ADMIN = "NOT admin";
     public static final String INTERNAL_SERVER_ERROR = "internal sever error occurred";
     public static final String DB_ERROR = "db error occurred";
 }

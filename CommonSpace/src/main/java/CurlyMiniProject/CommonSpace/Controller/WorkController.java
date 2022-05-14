@@ -34,7 +34,7 @@ public class WorkController {
     @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity getWorkByUserId(@PathVariable Long userId) {
         User user = userService.findById(userId).get();
-        List<WorkResponse> data = workService.getWorks(userId).stream()
+        List<WorkResponse> data = workService.getUserWorks(userId).stream()
                 .map(WorkResponse::new)
                 .collect(Collectors.toList());
         return new ResponseEntity(
@@ -62,19 +62,47 @@ public class WorkController {
                 , HttpStatus.CREATED);
     }
 
-//    @PutMapping(value = "/{userId}")
-//    public ResponseEntity putWork(@PathVariable Long userId, @RequestBody WorkUpdateRequest req) {
-//        User user = userService.findById(userId).get();
-//        if (user == null) {
-//            return new ResponseEntity(
-//                    DefaultResponse.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, null)
-//                    , HttpStatus.NOT_FOUND);
-//        }
-//
-//    }
-//
-//    @GetMapping
-//    public ResponseEntity getWorks() {
-//        return
-//    }
+    @GetMapping
+    public ResponseEntity getWorks() {
+        List<Work> works = workService.getWorks();
+        List<WorkResponse> data = works.stream()
+                .map(WorkResponse::new)
+                .collect(Collectors.toList());
+        return new ResponseEntity(
+                DefaultResponse.res(StatusCode.OK, ResponseMessage.READ_WORK, data)
+                , HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/{userId}")
+    public ResponseEntity putWork(@PathVariable Long userId, @RequestBody WorkUpdateRequest req) {
+        User staff = userService.findById(userId).get();
+        User administrator = userService.findById(req.getAdminId()).get();
+        if (!administrator.isAdmin()) {
+            return new ResponseEntity(
+                    DefaultResponse.res(StatusCode.FORBIDDEN, ResponseMessage.NOT_ADMIN, null)
+                    , HttpStatus.FORBIDDEN);
+        }
+        List<Work> workList = staff.getWorks();
+        Work work = null;
+        boolean isFound = false;
+        for (int i=0; i < workList.size() ; i++) {
+            if (workList.get(i).getId() == req.getWorkId()) {
+                work = workList.get(i);
+                isFound = true;
+                break;
+            }
+        }
+        if (isFound) {
+            work.setWorkingTime(req.getWorkingTime());
+            work.setQuittingTime(req.getQuittingTime());
+            work.setTotalTime(req.getTotalTime());
+            workService.save(work);
+            return new ResponseEntity(
+                    DefaultResponse.res(StatusCode.OK, ResponseMessage.UPDATED_WORK_SUCCESS, null)
+                    , HttpStatus.OK);
+        }
+        return new ResponseEntity(
+                DefaultResponse.res(StatusCode.BAD_REQUEST, ResponseMessage.UPDATED_WORK_FAIL, null)
+                , HttpStatus.BAD_REQUEST);
+    }
 }

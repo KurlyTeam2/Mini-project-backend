@@ -7,8 +7,9 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 
 public interface WorkService {
-    List<Work> getWorks(Long id);
+    List<Work> getUserWorks(Long id);
     Work postWorks(Work work);
     Work putWorks(Long id, Work work);
-    List<User> getUserWorks();
+    List<Work> getWorks();
+    void save(Work work);
 }
