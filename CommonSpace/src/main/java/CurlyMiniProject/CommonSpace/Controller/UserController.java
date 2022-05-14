@@ -32,7 +32,7 @@ public class UserController {
         if (users.isEmpty()) {
             return new ResponseEntity(
                     DefaultResponse.res(StatusCode.NO_CONTENT, ResponseMessage.NOT_FOUND_USER, null)
-                    , HttpStatus.NOT_FOUND);
+                    , HttpStatus.NO_CONTENT);
         }
         List<UserResponse> data = users.stream()
                 .map(UserResponse::new)
@@ -48,7 +48,7 @@ public class UserController {
         if (user.isEmpty()) {
             return new ResponseEntity(
                     DefaultResponse.res(StatusCode.NO_CONTENT, ResponseMessage.NOT_FOUND_USER, null)
-                    , HttpStatus.NOT_FOUND);
+                    , HttpStatus.NO_CONTENT);
         }
         UserResponse data = new UserResponse(user.get());
         return new ResponseEntity(
@@ -63,7 +63,7 @@ public class UserController {
         if (users.isEmpty()) {
             return new ResponseEntity(
                     DefaultResponse.res(StatusCode.NO_CONTENT, ResponseMessage.NOT_FOUND_USER, null)
-                    , HttpStatus.NOT_FOUND);
+                    , HttpStatus.NO_CONTENT);
         }
         List<UserResponse> data = users.stream()
                 .map(UserResponse::new)
