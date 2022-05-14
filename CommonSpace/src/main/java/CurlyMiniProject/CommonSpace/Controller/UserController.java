@@ -31,8 +31,8 @@ public class UserController {
         List<User> users = userService.findAll();
         if (users.isEmpty()) {
             return new ResponseEntity(
-                    DefaultResponse.res(StatusCode.NO_CONTENT, ResponseMessage.NOT_FOUND_USER, null)
-                    , HttpStatus.NO_CONTENT);
+                    DefaultResponse.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, null)
+                    , HttpStatus.NOT_FOUND);
         }
         List<UserResponse> data = users.stream()
                 .map(UserResponse::new)
@@ -47,8 +47,8 @@ public class UserController {
         Optional<User> user = userService.findById(id);
         if (user.isEmpty()) {
             return new ResponseEntity(
-                    DefaultResponse.res(StatusCode.NO_CONTENT, ResponseMessage.NOT_FOUND_USER, null)
-                    , HttpStatus.NO_CONTENT);
+                    DefaultResponse.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, null)
+                    , HttpStatus.NOT_FOUND);
         }
         UserResponse data = new UserResponse(user.get());
         return new ResponseEntity(
@@ -62,8 +62,8 @@ public class UserController {
         List<User> users = userService.findByName(name);
         if (users.isEmpty()) {
             return new ResponseEntity(
-                    DefaultResponse.res(StatusCode.NO_CONTENT, ResponseMessage.NOT_FOUND_USER, null)
-                    , HttpStatus.NO_CONTENT);
+                    DefaultResponse.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, null)
+                    , HttpStatus.NOT_FOUND);
         }
         List<UserResponse> data = users.stream()
                 .map(UserResponse::new)
