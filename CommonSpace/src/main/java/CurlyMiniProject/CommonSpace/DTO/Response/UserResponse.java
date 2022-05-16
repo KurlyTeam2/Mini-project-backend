@@ -14,6 +14,7 @@ public class UserResponse {
     private String name;
     private LocalDate entryDate;
     private String userId;
+    private String password;
     private boolean isAdmin;
 
     public UserResponse(User u) {
@@ -21,6 +22,7 @@ public class UserResponse {
         name = u.getName();
         entryDate = u.getEntryDate();
         userId = u.getUserId();
+        password = u.getPassword();
         isAdmin = u.isAdmin();
     }
 }
