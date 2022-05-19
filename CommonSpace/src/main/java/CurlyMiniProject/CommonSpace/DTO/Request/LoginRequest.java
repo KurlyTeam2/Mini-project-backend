@@ -7,9 +7,7 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-public class UserCreateRequest {
-    private String id;
+public class LoginRequest {
+    private String userId;
     private String password;
-    private String name;
-    private Boolean isAdmin;
 }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -25,8 +26,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getUsers() {
+    public ResponseEntity getUsers(@RequestHeader("X-AUTH-TOKEN") String token) {
         List<User> users = userService.findAll();
         if (users.isEmpty()) {
             return new ResponseEntity(
@@ -42,7 +47,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/id/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getUserById(@PathVariable Long id) {
+    public ResponseEntity getUserById(@RequestHeader("X-AUTH-TOKEN") String token, @PathVariable Long id) {
         Optional<User> user = userService.findById(id);
         if (user.isEmpty()) {
             return new ResponseEntity(
@@ -57,7 +62,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/name/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getUserByName(@PathVariable String name) {
+    public ResponseEntity getUserByName(@RequestHeader("X-AUTH-TOKEN") String token, @PathVariable String name) {
         List<User> users = userService.findByName(name);
         if (users.isEmpty()) {
             return new ResponseEntity(
@@ -73,23 +78,39 @@ public class UserController {
         );
     }
 
-    @PostMapping
-    public ResponseEntity postUser(@RequestBody UserCreateRequest req){
+//    @PostMapping
+//    public ResponseEntity postUser(@RequestBody UserCreateRequest req){
+//        User user = new User();
+//        user.setName(req.getName());
+//        user.setUserId(req.getId());
+//        user.setPassword(req.getPassword());
+//        user.setEntryDate(LocalDate.now());
+//        user.setAdmin(req.isAdmin());
+//        userService.save(user);
+//        return new ResponseEntity(
+//                DefaultResponse.res(StatusCode.CREATED, ResponseMessage.CREATED_USER, null),
+//                HttpStatus.CREATED
+//        );
+//    }
+
+    @PostMapping(value = "/signup")
+    public ResponseEntity signup(@RequestBody UserCreateRequest req) {
         User user = new User();
         user.setName(req.getName());
         user.setUserId(req.getId());
-        user.setPassword(req.getPassword());
+        user.setPassword(passwordEncoder.encode(req.getPassword()));
         user.setEntryDate(LocalDate.now());
-        user.setAdmin(req.isAdmin());
+        user.setAdmin(req.getIsAdmin());
+        System.out.println("isAdmin: " + String.valueOf(req.getIsAdmin()));
         userService.save(user);
         return new ResponseEntity(
                 DefaultResponse.res(StatusCode.CREATED, ResponseMessage.CREATED_USER, null),
-                HttpStatus.CREATED
-        );
+                HttpStatus.CREATED);
     }
 
+
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity putUser(@PathVariable Long id, @RequestBody UserUpdateRequest data) {
+    public ResponseEntity putUser(@PathVariable Long id, @RequestBody UserUpdateRequest data, @RequestHeader("X-AUTH-TOKEN") String token) {
         User beforeUser = userService.findById(id).get();
 
         ResponseEntity response;
@@ -119,7 +140,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity deleteUser(@PathVariable Long id) {
+    public ResponseEntity deleteUser(@PathVariable Long id, @RequestHeader("X-AUTH-TOKEN") String token) {
         userService.deleteById(id);
         return new ResponseEntity(
                 DefaultResponse.res(StatusCode.OK, ResponseMessage.DELETE_USER, null),

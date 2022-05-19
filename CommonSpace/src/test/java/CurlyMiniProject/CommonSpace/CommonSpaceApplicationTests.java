@@ -9,5 +9,4 @@ class CommonSpaceApplicationTests {
 	@Test
 	void contextLoads() {
 	}
-
 }
