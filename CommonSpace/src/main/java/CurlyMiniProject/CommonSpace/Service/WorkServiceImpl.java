@@ -1,6 +1,5 @@
 package CurlyMiniProject.CommonSpace.Service;
 
-import CurlyMiniProject.CommonSpace.Domain.User;
 import CurlyMiniProject.CommonSpace.Domain.Work;
 import CurlyMiniProject.CommonSpace.Repository.WorkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,12 +7,16 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service("workService")
 public class WorkServiceImpl implements WorkService {
 
     @Autowired
     private WorkRepository workRepository;
+
+    @Override
+    public Optional<Work> findById(Long id) { return workRepository.findById(id); }
 
     @Override
     public List<Work> getUserWorks(Long id) {

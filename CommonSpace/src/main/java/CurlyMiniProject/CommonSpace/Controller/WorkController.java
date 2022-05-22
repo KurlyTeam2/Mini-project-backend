@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/works")
 public class WorkController {
@@ -31,8 +32,8 @@ public class WorkController {
     @Autowired
     private UserService userService;
 
-    @GetMapping(value = "/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getWorkByUserId(@PathVariable Long userId) {
+    @GetMapping(value = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getWorkByUserId(@RequestHeader("X-AUTH-TOKEN") String token, @PathVariable Long userId) {
         User user = userService.findById(userId).get();
         List<WorkResponse> data = workService.getUserWorks(userId).stream()
                 .map(WorkResponse::new)
@@ -42,28 +43,44 @@ public class WorkController {
                 , HttpStatus.OK);
     }
 
-    @PostMapping(value="/{userId}")
-    public ResponseEntity postWork(@PathVariable Long userId, @RequestBody WorkCreateRequest req) {
+    @PostMapping(value = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity postWorkingTime(@RequestHeader("X-AUTH-TOKEN") String token, @PathVariable Long userId, @RequestBody WorkCreateRequest req) {
+       Optional<User> user = userService.findById(userId);
+       if (user == null) {
+           return new ResponseEntity(
+                   DefaultResponse.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, null)
+                   , HttpStatus.NOT_FOUND);
+       }
+       Work work = new Work();
+       work.setWorkDate(LocalDate.now());
+       work.setWorkingTime(req.getWorkingTime());
+       work.setUser(user.get());
+       Long workId = workService.postWorks(work).getId();
+       return new ResponseEntity(
+               DefaultResponse.res(StatusCode.CREATED, ResponseMessage.CREATED_WORK, workId)
+               , HttpStatus.CREATED);
+
+    }
+
+    @PutMapping(value = "/user/{userId}")
+    public ResponseEntity putQuittingTime(@RequestHeader("X-AUTH-TOKEN") String token, @PathVariable Long userId, @RequestBody WorkUpdateRequest req) {
         Optional<User> user = userService.findById(userId);
-        if (user == null) {
+        Work work = workService.findById(req.getWorkId()).get();
+        if (work == null) {
             return new ResponseEntity(
-                    DefaultResponse.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_USER, null)
+                    DefaultResponse.res(StatusCode.NOT_FOUND, ResponseMessage.NOT_FOUND_WORK, null)
                     , HttpStatus.NOT_FOUND);
         }
-        Work work = new Work();
-        work.setWorkDate(LocalDate.now());
-        work.setWorkingTime(req.getWorkingTime());
         work.setQuittingTime(req.getQuittingTime());
         work.setTotalTime(req.getTotalTime());
-        work.setUser(user.get());
-        workService.postWorks(work);
+        workService.save(work);
         return new ResponseEntity(
-                DefaultResponse.res(StatusCode.CREATED, ResponseMessage.CREATED_WORK, null)
-                , HttpStatus.CREATED);
+                DefaultResponse.res(StatusCode.OK, ResponseMessage.UPDATED_WORK_SUCCESS, null)
+                , HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity getWorks() {
+    public ResponseEntity getWorks(@RequestHeader("X-AUTH-TOKEN") String token) {
         List<Work> works = workService.getWorks();
         List<WorkResponse> data = works.stream()
                 .map(WorkResponse::new)
@@ -73,36 +90,21 @@ public class WorkController {
                 , HttpStatus.OK);
     }
 
-    @PutMapping(value = "/{userId}")
-    public ResponseEntity putWork(@PathVariable Long userId, @RequestBody WorkUpdateRequest req) {
+    @PutMapping(value = "/admin/{userId}")
+    public ResponseEntity putWork(@RequestHeader("X-AUTH-TOKEN") String token, @PathVariable Long userId, @RequestBody WorkUpdateRequest req) {
         User staff = userService.findById(userId).get();
-        User administrator = userService.findById(req.getAdminId()).get();
-        if (!administrator.isAdmin()) {
+        Work work = workService.findById(req.getWorkId()).get();
+        if (work == null) {
             return new ResponseEntity(
-                    DefaultResponse.res(StatusCode.FORBIDDEN, ResponseMessage.NOT_ADMIN, null)
-                    , HttpStatus.FORBIDDEN);
+                    DefaultResponse.res(StatusCode.BAD_REQUEST, ResponseMessage.UPDATED_USER_FAIL, null)
+                    , HttpStatus.BAD_REQUEST);
         }
-        List<Work> workList = staff.getWorks();
-        Work work = null;
-        boolean isFound = false;
-        for (int i=0; i < workList.size() ; i++) {
-            if (workList.get(i).getId() == req.getWorkId()) {
-                work = workList.get(i);
-                isFound = true;
-                break;
-            }
-        }
-        if (isFound) {
-            work.setWorkingTime(req.getWorkingTime());
-            work.setQuittingTime(req.getQuittingTime());
-            work.setTotalTime(req.getTotalTime());
-            workService.save(work);
-            return new ResponseEntity(
-                    DefaultResponse.res(StatusCode.OK, ResponseMessage.UPDATED_WORK_SUCCESS, null)
-                    , HttpStatus.OK);
-        }
+        work.setWorkingTime(req.getWorkingTime());
+        work.setQuittingTime(req.getQuittingTime());
+        work.setTotalTime(req.getTotalTime());
+        workService.save(work);
         return new ResponseEntity(
-                DefaultResponse.res(StatusCode.BAD_REQUEST, ResponseMessage.UPDATED_WORK_FAIL, null)
-                , HttpStatus.BAD_REQUEST);
+                DefaultResponse.res(StatusCode.OK, ResponseMessage.UPDATED_WORK_SUCCESS, null)
+                , HttpStatus.OK);
     }
 }

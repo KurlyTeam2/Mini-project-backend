@@ -11,7 +11,6 @@ import java.time.LocalTime;
 @Getter
 @Setter
 public class WorkUpdateRequest {
-    private Long adminId;
     private Long workId;
     private LocalDateTime workingTime;
     private LocalDateTime quittingTime;

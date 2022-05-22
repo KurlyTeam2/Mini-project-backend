@@ -1,12 +1,12 @@
 package CurlyMiniProject.CommonSpace.Service;
 
-import CurlyMiniProject.CommonSpace.Domain.User;
 import CurlyMiniProject.CommonSpace.Domain.Work;
-import org.springframework.data.domain.Sort;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WorkService {
+    Optional<Work> findById(Long id);
     List<Work> getUserWorks(Long id);
     Work postWorks(Work work);
     Work putWorks(Long id, Work work);

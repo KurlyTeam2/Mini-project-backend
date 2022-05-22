@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -111,11 +112,11 @@ public class UserController {
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity putUser(@PathVariable Long id, @RequestBody UserUpdateRequest data, @RequestHeader("X-AUTH-TOKEN") String token) {
-        User beforeUser = userService.findById(id).get();
+        User user = userService.findById(id).get();
 
         ResponseEntity response;
 
-        if (beforeUser == null) {
+        if (user == null) {
             response = new ResponseEntity(
                     DefaultResponse.res(StatusCode.BAD_REQUEST, ResponseMessage.NOT_FOUND_USER, null),
                     HttpStatus.BAD_REQUEST
@@ -123,9 +124,10 @@ public class UserController {
             return response;
         }
 
-        if (beforeUser.getPassword().equals(data.getCurrentPassword())) {
-            beforeUser.setPassword(data.getNewPassword());
-            userService.save(beforeUser);
+        if (passwordEncoder.matches(data.getCurrentPassword(), user.getPassword())) {
+            String encodedNewPassword = passwordEncoder.encode(data.getNewPassword());
+            user.setPassword(encodedNewPassword);
+            userService.save(user);
             response = new ResponseEntity(
                     DefaultResponse.res(StatusCode.OK, ResponseMessage.UPDATED_USER_SUCCESS, null),
                     HttpStatus.OK

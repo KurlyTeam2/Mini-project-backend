@@ -11,6 +11,7 @@ import java.time.LocalTime;
 @Getter
 @Setter
 public class WorkCreateRequest {
+    private Long workId;
     private LocalDateTime workingTime;
     private LocalDateTime quittingTime;
     private LocalTime totalTime;
